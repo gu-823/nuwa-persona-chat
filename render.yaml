@@ -1,0 +1,26 @@
+# Render 部署蓝图（Blueprint）
+# 在 Render 新建 Web Service 时选择 "Blueprint"，Render 会自动读取本文件。
+# 仓库已有 Dockerfile，Render 会构建镜像并运行其 CMD（npx tsx server/index.ts）。
+services:
+  - type: web
+    name: nuwa-persona-chat
+    runtime: docker
+    plan: free
+    # 健康检查：登录态接口始终返回 200
+    healthCheckPath: /api/auth/status
+    # 自动从 main 分支部署
+    branch: main
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # 跨域：允许 GitHub Pages 前端调用本后端（务必与实际 Pages 地址一致）
+      - key: CORS_ORIGIN
+        value: https://gu-823.github.io/nuwa-persona-chat/
+      # 以下为密钥，sync:false 表示由你在 Render 后台手动填写（不会进仓库）：
+      - key: LONGCAT_API_KEY
+        sync: false
+      - key: DOUBAO_SEARCH_API_KEY
+        sync: false
+      # 站点登录口令：务必设为只有你知道的长随机串（公网必改）
+      - key: NUWA_SITE_PASSWORD
+        sync: false
