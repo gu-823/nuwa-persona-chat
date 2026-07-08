@@ -1,0 +1,9 @@
+node_modules
+.git
+.env
+.env.local
+*.log
+dist
+data/chats
+data/research
+data/personas/custom

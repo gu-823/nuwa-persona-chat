@@ -1,0 +1,10 @@
+.env
+.env.local
+# 独立子项目，不属于本应用，单独建仓管理
+nuwa-skill-main/
+node_modules/
+dist/
+data/chats/
+data/research/
+data/personas/custom/
+*.log
