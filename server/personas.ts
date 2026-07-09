@@ -8,11 +8,15 @@ const seedPersonaFiles = [
   path.join(ROOT_DIR, "Musk.md"),
   path.join(ROOT_DIR, "Trump.md"),
   path.join(ROOT_DIR, "张雪峰.md"),
-  path.resolve("E:/solo/女娲/distilled-skills/cai-xukun/SKILL.md"),
-  path.resolve("E:/solo/女娲/distilled-skills/karl-marx/SKILL.md"),
-  path.resolve("E:/solo/女娲/distilled-skills/mao-zedong/SKILL.md"),
-  path.resolve("E:/solo/女娲/distilled-skills/socrates/SKILL.md"),
-  path.resolve("E:/solo/女娲/distilled-skills/su-dongpo/SKILL.md")
+  // Built-in personas shipped with the repo (relative paths so they work in
+  // Docker/Render, not hardcoded to a local machine).
+  path.join(ROOT_DIR, "personas", "seed", "cai-xukun", "SKILL.md"),
+  path.join(ROOT_DIR, "personas", "seed", "karl-marx", "SKILL.md"),
+  path.join(ROOT_DIR, "personas", "seed", "mao-zedong", "SKILL.md"),
+  path.join(ROOT_DIR, "personas", "seed", "socrates", "SKILL.md"),
+  path.join(ROOT_DIR, "personas", "seed", "su-dongpo", "SKILL.md"),
+  path.join(ROOT_DIR, "personas", "seed", "lifeifei", "SKILL.md"),
+  path.join(ROOT_DIR, "personas", "seed", "wangxiaobo", "SKILL.md")
 ];
 
 const accentPalette = [
@@ -54,7 +58,16 @@ export async function loadPersonas(): Promise<Persona[]> {
     }
   }
 
-  return personas;
+  // Deduplicate by id (seed sources come first, so a custom file that shares an
+  // id with a seed never shows up twice).
+  const seen = new Set<string>();
+  const unique = personas.filter((persona) => {
+    if (seen.has(persona.id)) return false;
+    seen.add(persona.id);
+    return true;
+  });
+
+  return unique;
 }
 
 export async function getPersona(id: string): Promise<Persona | undefined> {
